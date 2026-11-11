@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Life Dashboard | Your Academic Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-light: rgba(99, 102, 241, 0.15);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 16px 24px;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-area h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo-area p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #1e293b;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      border: 1px solid var(--card-border);
+    }
+    .user-profile img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .user-profile span {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 900px) {
+      .grid-2 { grid-template-columns: 1.2fr 0.8fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(192, 132, 252, 0.1));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .welcome-text h2 { font-size: 1.5rem; font-weight: 800; }
+    .welcome-text p { color: var(--text-muted); font-size: 0.9rem; }
+    .quick-stats {
+      display: flex;
+      gap: 16px;
+    }
+    .stat-badge {
+      background: rgba(17, 24, 39, 0.6);
+      padding: 8px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      text-align: center;
+    }
+    .stat-badge .num { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+    .stat-badge .label { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Timetable */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .tab-btn {
+      background: #182232;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .class-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: #182232;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--accent);
+    }
+    .class-time { font-size: 0.8rem; color: var(--text-muted); }
+    .class-name { font-weight: 700; font-size: 0.95rem; }
+    .class-room { font-size: 0.8rem; color: var(--accent); background: var(--accent-light); padding: 2px 8px; border-radius: 4px; }
+
+    /* Events */
+    .events-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media(min-width: 600px) {
+      .events-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    }
+    .event-card {
+      background: #182232;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+    .event-date { font-size: 0.75rem; color: var(--accent); font-weight: 700; }
+    .event-title { font-weight: 700; font-size: 0.95rem; }
+    .event-loc { font-size: 0.8rem; color: var(--text-muted); }
+    .save-btn {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* Notices */
+    .notice-item {
+      padding: 12px;
+      background: #182232;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid var(--card-border);
+    }
+    .notice-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .notice-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+    .tag-urgent { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .tag-info { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+
+    /* To-Do */
+    .todo-input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .todo-input {
+      flex: 1;
+      background: #182232;
+      border: 1px solid var(--card-border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--text);
+    }
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .todo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #182232;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .todo-item.done span { text-decoration: line-through; color: var(--text-dim); }
+
+    /* Directory */
+    .fac-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media(min-width: 600px) {
+      .fac-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    }
+    .fac-card {
+      background: #182232;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+    .fac-status { font-size: 0.75rem; font-weight: 700; display: inline-block; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+    .open { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .closed { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+    footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="logo-area">
+        <h1>Campus Life Dashboard</h1>
+        <p>Your academic hub. Stay connected. Never miss a moment.</p>
+      </div>
+      <div class="user-profile">
+        <span>Alex Morgan</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Personalised Welcome Overview -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h2 id="greeting">Welcome back, Alex! 👋</h2>
+        <p>Here is what is happening across campus today.</p>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-badge">
+          <div class="num" id="statSavedEvents">0</div>
+          <div class="label">Saved Events</div>
+        </div>
+        <div class="stat-badge">
+          <div class="num" id="statPendingTasks">0</div>
+          <div class="label">Pending Tasks</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Left Column -->
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        
+        <!-- Weekly Class Timetable -->
+        <div class="card">
+          <div class="card-title">Weekly Class Timetable</div>
+          <div class="tabs">
+            <button class="tab-btn active" onclick="showDay('Mon', this)">Mon</button>
+            <button class="tab-btn" onclick="showDay('Tue', this)">Tue</button>
+            <button class="tab-btn" onclick="showDay('Wed', this)">Wed</button>
+            <button class="tab-btn" onclick="showDay('Thu', this)">Thu</button>
+            <button class="tab-btn" onclick="showDay('Fri', this)">Fri</button>
+          </div>
+          <div id="timetableContent"></div>
+        </div>
+
+        <!-- Campus Events with Save Functionality -->
+        <div class="card">
+          <div class="card-title">Campus Events</div>
+          <div class="events-grid" id="eventsGrid"></div>
+        </div>
+
+        <!-- Campus Facilities Directory -->
+        <div class="card">
+          <div class="card-title">Campus Facilities Directory</div>
+          <div class="fac-grid" id="facGrid"></div>
+        </div>
+
+      </div>
+
+      <!-- Right Column -->
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        
+        <!-- To-Do List with Task Management -->
+        <div class="card">
+          <div class="card-title">To-Do List</div>
+          <div class="todo-input-row">
+            <input type="text" id="todoInput" class="todo-input" placeholder="Add a new task...">
+            <button class="btn" onclick="addTodo()">Add</button>
+          </div>
+          <div id="todoList"></div>
+        </div>
+
+        <!-- Notices and Announcements -->
+        <div class="card">
+          <div class="card-title">Notices & Announcements</div>
+          <div id="noticesList"></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Campus Life Dashboard &copy; 2026. Interactive demo backed by LocalStorage.</p>
+  </footer>
+
+  <script>
+    // Data Structures
+    const timetableData = {
+      Mon: [
+        { name: "Computer Networks", time: "09:00 AM - 10:30 AM", room: "Hall B" },
+        { name: "Database Systems Lab", time: "11:00 AM - 01:00 PM", room: "Lab 3" }
+      ],
+      Tue: [
+        { name: "Operating Systems", time: "10:00 AM - 11:30 AM", room: "Room 204" },
+        { name: "Linear Algebra", time: "02:00 PM - 03:30 PM", room: "Hall A" }
+      ],
+      Wed: [
+        { name: "Web Engineering", time: "09:00 AM - 10:30 AM", room: "Lab 1" },
+        { name: "Computer Networks", time: "11:30 AM - 01:00 PM", room: "Hall B" }
+      ],
+      Thu: [
+        { name: "Software Engineering", time: "10:00 AM - 11:30 AM", room: "Room 102" },
+        { name: "Database Systems", time: "01:30 PM - 03:00 PM", room: "Hall C" }
+      ],
+      Fri: [
+        { name: "Cyber Security Seminar", time: "10:00 AM - 12:00 PM", room: "Auditorium" }
+      ]
+    };
+
+    const eventsData = [
+      { id: 1, title: "Annual Hackathon 2026", date: "Nov 15 • 10:00 AM", loc: "Student Center" },
+      { id: 2, title: "Career & Internship Fair", date: "Nov 18 • 09:00 AM", loc: "Main Gym" },
+      { id: 3, title: "Guest Lecture: AI Trends", date: "Nov 22 • 02:00 PM", loc: "Auditorium" }
+    ];
+
+    const noticesData = [
+      { title: "Mid-Term Exam Schedule Released", date: "Nov 10", tag: "tag-urgent", label: "URGENT" },
+      { title: "Library Extended Hours for Finals", date: "Nov 08", tag: "tag-info", label: "INFO" },
+      { title: "Campus Wi-Fi Maintenance on Sunday", date: "Nov 05", tag: "tag-info", label: "NOTICE" }
+    ];
+
+    const facilitiesData = [
+      { name: "Central Library", status: "Open", time: "08:00 AM - 10:00 PM", class: "open" },
+      { name: "Student Health Center", status: "Open", time: "09:00 AM - 05:00 PM", class: "open" },
+      { name: "Campus Fitness Center", status: "Open", time: "06:00 AM - 09:00 PM", class: "open" },
+      { name: "Tech Support Desk", status: "Closed", time: "Opens Mon 09:00 AM", class: "closed" }
+    ];
+
+    // Local Storage State
+    let savedEventIds = JSON.parse(localStorage.getItem('campus_saved_events')) || [];
+    let todos = JSON.parse(localStorage.getItem('campus_todos')) || [
+      { text: "Submit Computer Networks Assignment", done: false },
+      { text: "Register team for Hackathon", done: true }
+    ];
+
+    // Initial Setup
+    document.addEventListener("DOMContentLoaded", () => {
+      showDay('Mon');
+      renderEvents();
+      renderNotices();
+      renderFacilities();
+      renderTodos();
+      updateStats();
+    });
+
+    function showDay(day, btnElem) {
+      if(btnElem) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btnElem.classList.add('active');
+      }
+      const container = document.getElementById('timetableContent');
+      const classes = timetableData[day] || [];
+      if (classes.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No classes scheduled for this day.</p>`;
+        return;
+      }
+      container.innerHTML = classes.map(c => `
+        <div class="class-item">
+          <div>
+            <div class="class-name">${c.name}</div>
+            <div class="class-time">${c.time}</div>
+          </div>
+          <div class="class-room">${c.room}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderEvents() {
+      const container = document.getElementById('eventsGrid');
+      container.innerHTML = eventsData.map(e => {
+        const isSaved = savedEventIds.includes(e.id);
+        return `
+          <div class="event-card">
+            <button class="save-btn" onclick="toggleSaveEvent(${e.id})">${isSaved ? '⭐' : '☆'}</button>
+            <div class="event-date">${e.date}</div>
+            <div class="event-title">${e.title}</div>
+            <div class="event-loc">${e.loc}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleSaveEvent(id) {
+      if (savedEventIds.includes(id)) {
+        savedEventIds = savedEventIds.filter(eId => eId !== id);
+      } else {
+        savedEventIds.push(id);
+      }
+      localStorage.setItem('campus_saved_events', JSON.stringify(savedEventIds));
+      renderEvents();
+      updateStats();
+    }
+
+    function renderNotices() {
+      const container = document.getElementById('noticesList');
+      container.innerHTML = noticesData.map(n => `
+        <div class="notice-item">
+          <div class="notice-header">
+            <span class="notice-tag ${n.tag}">${n.label}</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">${n.date}</span>
+          </div>
+          <div style="font-weight:600; font-size:0.9rem;">${n.title}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderFacilities() {
+      const container = document.getElementById('facGrid');
+      container.innerHTML = facilitiesData.map(f => `
+        <div class="fac-card">
+          <div style="font-weight:700; font-size:0.9rem;">${f.name}</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">${f.time}</div>
+          <span class="fac-status ${f.class}">${f.status}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderTodos() {
+      const container = document.getElementById('todoList');
+      container.innerHTML = todos.map((t, idx) => `
+        <div class="todo-item ${t.done ? 'done' : ''}">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo(${idx})">
+            <span>${t.text}</span>
+          </div>
+          <button style="background:transparent; border:none; color:#ef4444; cursor:pointer;" onclick="deleteTodo(${idx})">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function addTodo() {
+      const input = document.getElementById('todoInput');
+      const val = input.value.trim();
+      if (!val) return;
+      todos.push({ text: val, done: false });
+      input.value = '';
+      saveTodos();
+    }
+
+    function toggleTodo(idx) {
+      todos[idx].done = !todos[idx].done;
+      saveTodos();
+    }
+
+    function deleteTodo(idx) {
+      todos.splice(idx, 1);
+      saveTodos();
+    }
+
+    function saveTodos() {
+      localStorage.setItem('campus_todos', JSON.stringify(todos));
+      renderTodos();
+      updateStats();
+    }
+
+    function updateStats() {
+      document.getElementById('statSavedEvents').innerText = savedEventIds.length;
+      document.getElementById('statPendingTasks').innerText = todos.filter(t => !t.done).length;
+    }
+  </script>
+</body>
+</html>
